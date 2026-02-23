@@ -2,6 +2,7 @@ package com.example.advanced_spring.proxy.pureproxy.concreteproxy.code;
 
 public class ConcreteClient {
 
+    // ConcreteLogic과 TimeProxy 모두 주입 가능
     private ConcreteLogic concreteLogic;
 
     public ConcreteClient(ConcreteLogic concreteLogic) {
