@@ -11,6 +11,7 @@ import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 
 @Slf4j
 public class AdvisorTest {
@@ -57,6 +58,29 @@ public class AdvisorTest {
          * 17:01:55.253 [Test worker] INFO com.example.advanced_spring.proxy.advisor.AdvisorTest -- 포인트컷 호출 method=find, targetClass=class com.example.advanced_spring.proxy.common.service.ServiceImpl
          * 17:01:55.253 [Test worker] INFO com.example.advanced_spring.proxy.advisor.AdvisorTest -- 포인트컷 결과 result=false
          * 17:01:55.253 [Test worker] INFO com.example.advanced_spring.proxy.common.service.ServiceImpl -- find 호출...
+         */
+    }
+
+    @Test
+    void advisorTest3() {
+        ServiceInterface target = new ServiceImpl();
+        ProxyFactory proxyFactory = new ProxyFactory(target);
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        pointcut.setMappedNames("save");
+
+        DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor(pointcut, new TimeAdvice());
+        proxyFactory.addAdvisor(advisor);
+        ServiceInterface proxy = (ServiceInterface) proxyFactory.getProxy();
+
+        proxy.save();
+        proxy.find();
+
+        /**
+         * 17:15:55.486 [Test worker] INFO com.example.advanced_spring.proxy.common.advice.TimeAdvice -- TimeProxy 실행...
+         * 17:15:55.489 [Test worker] INFO com.example.advanced_spring.proxy.common.service.ServiceImpl -- save 호출...
+         * 17:15:55.489 [Test worker] INFO com.example.advanced_spring.proxy.common.advice.TimeAdvice -- TimeProxy 종료 resultTime=0
+         *
+         * 17:15:55.490 [Test worker] INFO com.example.advanced_spring.proxy.common.service.ServiceImpl -- find 호출...
          */
     }
 
